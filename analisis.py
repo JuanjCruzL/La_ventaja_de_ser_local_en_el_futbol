@@ -1,6 +1,6 @@
 # %% [markdown]
-# # Título del proyecto
-# Integrantes: Nombre A, Nombre B
+# # La ventaja de ser local en el fútbol
+# Integrantes: Natalía Guzmán , Juan José Criz
 
 # %%
 import pandas as pd
@@ -12,6 +12,21 @@ df = pd.read_csv("datos/home_advantage_matches.csv")
 
 # %% [markdown]
 # ## 1. Carga e inspección inicial de los datos  (Integrante A)
+# %%
+print("Muestra de los registros:")
+display(df.head())
+
+# %%
+print("Dimensiones:")
+print(df.shape)
+
+# %%
+print("Información general:")
+df.info()
+
+# %%
+print("Estadísticas descriptivas:")
+display(df.describe().round(2))
 
 # %% [markdown]
 # ## 2. Manejo de datos faltantes  (Integrante B)
