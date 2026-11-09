@@ -31,6 +31,12 @@ display(df.describe().round(2))
 # %% [markdown]
 # ## 2. Manejo de datos faltantes  (Integrante B)
 
+# %%
+df.isna().sum()
+
+# %%
+# Si existieran datos faltantes se reemplazarían de esta manera (variables numéricas):
+df['travel_distance_km'] = df['travel_distance_km'].fillna(df['travel_distance_km'].median())
 # %% [markdown]
 # ## 3. Identificación de outliers  (Integrante A)
 
