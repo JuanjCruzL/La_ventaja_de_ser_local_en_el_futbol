@@ -1,6 +1,6 @@
 # %% [markdown]
 # # La ventaja de ser local en el fútbol
-# Integrantes: Natalía Guzmán , Juan José Criz
+# Integrantes: Natalía Guzmán , Juan José Cruz
 
 # %%
 import pandas as pd
@@ -98,6 +98,29 @@ plt.xlabel("Tarjetas amarillas del Equipo Visitante", fontsize=10)
 plt.show()
 # %% [markdown]
 # ## 4. Valores inconsistentes y duplicados  (Integrante B)
+# Usando .duplicated() verificamos que esta base de datos no tiene valores duplicados.
+# Adicionalmente revisamos las variables categóricas con .unique() y comprobamos que no hay valores inconsistentes de texto.
+# Si existieran, los eliminaríamos o cambiaríamos usando .drop_duplicates(), .replace() o fillna() según el caso.
+
+#%%
+duplicados = df[df.duplicated()]
+print(f' Cantidad de duplicados: {duplicados.shape[0]}')
+
+#%%
+# En el caso de que hubieran duplicados se eleminarían así: 
+df = df.drop_duplicates()
+
+#%%
+ligas = list(df['league'].unique())
+print(f'Lista de valores únicos en la columna "league": {ligas}')
+
+#%%
+resultados = list(df['home_result'].unique())
+print(f'Lista de valores únicos en la columna "home_result": {resultados}')
+
+#%%
+# Si existieran valores inconsistentes en texto se reemplazarían así:
+df = df['league'].replace({'LaLiga': 'La_Liga'})
 
 # %% [markdown]
 # ## 5. Creación de variables  (Integrante A)
