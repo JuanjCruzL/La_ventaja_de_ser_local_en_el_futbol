@@ -189,7 +189,60 @@ print(goles_visitante['home_result'].value_counts(normalize=True))
 
 # %% [markdown]
 # ## 7. Agrupación con groupby  (Integrante A)
+#%%
+derbis = df.groupby("is_derby").agg(
+    partidos=("match_id", "count"),
+    goles_locales=("goals_home", "mean"),
+    goles_visitantes=("goals_away", "mean"),
+    puntos_locales=("home_points", "mean"),
+    tarjetas_totales=("total_cards","mean"),
+    diferencia_faltas=("fouls_diff","mean"),
+    
+)
 
+derbis.round(2)
+#%% [markdown]
+# Contrario a la creencia popular, los datos muestran que en los derbis se diluye ligeramente la ventaja de jugar en casa: el equipo local promedia menos goles (1.45 vs 1.60) y menos puntos (1.54 vs 1.65). Por otro lado, el aspecto disciplinario se mantiene prácticamente intactotanto el promedio de tarjetas totales (~3.76) como la diferencia de faltas a favor del local (~2.85 faltas menos cometidas) no sufren variaciones relevantes respecto a un partido regular
+#%%
+Asistencia = df.groupby("crowd_present").agg(
+    goles_locales=("goals_home", "mean"),
+    goles_visitantes=("goals_away", "mean"),
+    puntos_locales=("home_points", "mean"),
+    tarjetas_totales=("total_cards","mean"),
+    diferencia_faltas=("fouls_diff","mean"),
+    sesgo_arbitro=("referee_bias_susceptibility","mean")
+)
+Asistencia.round(2)
+#%% [markdown]
+# La presencia de público incrementa los goles y puntos del equipo local mientras reduce los del visitante. Asimismo, genera un fuerte desbalance en las faltas a favor del local, confirmando la influencia psicológica de la hinchada.
+#%%
+country = df.groupby("country").agg(
+    partidos=("match_id", "count"),
+    goles_locales=("goals_home", "mean"),
+    goles_visitantes=("goals_away", "mean"),
+    puntos_locales=("home_points", "mean"),
+    tarjetas_totales=("total_cards","mean"),
+    diferencia_faltas=("fouls_diff","mean"),
+    
+)
+
+country.round(2)
+#%% [markdown]
+# La ventaja de local es sumamente homogénea en todos los países evaluados, mostrando promedios casi idénticos en goles (~1.6 a favor y ~1.1 visitante), puntos (~1.65) y tarjetas (~3.7). Esto demuestra que el factor local es un fenómeno global y constante, independiente de la liga o país.
+#%%
+attendance_pct = df.groupby("attendance_pct").agg(
+    partidos=("match_id", "count"),
+    goles_locales=("goals_home", "mean"),
+    goles_visitantes=("goals_away", "mean"),
+    puntos_locales=("home_points", "mean"),
+    tarjetas_totales=("total_cards","mean"),
+    diferencia_faltas=("fouls_diff","mean"),
+    
+)
+
+attendance_pct.round(2)
+#%% [markdown]
+# A mayor porcentaje de asistencia, efectivamente mejora el rendimiento del equipo local en goles, puntos y faltas a favor. En los 9,925 partidos con asistencia 0.0 (que corresponden en su mayoría a la pandemia), el juego fue mucho más parejo en goles (1.44 vs 1.20) y prácticamente neutral en las faltas (0.01). En contraste, cuando el estadio roza el 100% de ocupación (0.995 - 0.999), el local dispara su promedio hasta los 2.00 goles y más de 2.1 puntos por partido, mientras el desbalance en faltas supera las -5.00 a su favor.
 # %% [markdown]
 # ## 8. Visualizaciones  (Integrante B)
 
