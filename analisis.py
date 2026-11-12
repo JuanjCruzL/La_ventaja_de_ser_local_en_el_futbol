@@ -1,6 +1,6 @@
 # %% [markdown]
 # # La ventaja de ser local en el fútbol
-# Integrantes: Natalía Guzmán , Juan José Cruz
+# Integrantes: Natalia Guzmán , Juan José Cruz
 
 # %%
 import pandas as pd
@@ -28,23 +28,22 @@ df.info()
 print("Estadísticas descriptivas:")
 display(df.describe().round(2))
 
-# %% [Markdown]
+# %% [markdown]
 # ## 2. Manejo de datos faltantes  (Integrante B)
-# Nuestra base de datos no tiene ningún dato faltante. En el caso de que existieran se imputarían usando la mediana 
-# ya que además de que esta medida no se deja influenciar por outliers, columnas como "home_points", "goals_away" y 
-# "fouls_away" tienen variables discretas y por lo tanto la media no es adecuada para reemplazarlos.
+# Nuestra base de datos no tiene ningún dato faltante. En el caso de que existieran se imputarían usando la mediana ya que además de que esta medida no se deja influenciar por outliers, columnas como "home_points", "goals_away" y "fouls_away" tienen variables discretas y por lo tanto la media no es adecuada para reemplazarlos.
 
+# %% [markdown]
+# Cantidad de valores faltantes:
 # %%
-print('Cantidad de valores faltantes:')
 df.isna().sum()
-
-# %%
+# %% [markdown]
 #Si existieran datos faltantes se reemplazarían de esta manera (variables numéricas):
+# %%
 df['travel_distance_km'] = df['travel_distance_km'].fillna(df['travel_distance_km'].median())
 
 # %% [markdown]
 # ## 3. Identificación de outliers  (Integrante A)
-# ## Las variables que tomamos para hacer los boxplot nos permitieron hacer una primera comparación entre el local y el visitante, además de identifcar outliers y los cuartiles en cada una de ellas.
+# Las variables que tomamos para hacer los boxplot nos permitieron hacer una primera comparación entre el local y el visitante, además de identifcar outliers y los cuartiles en cada una de ellas.
 # %%
 plt.figure(figsize=(7, 4))
 
@@ -108,9 +107,9 @@ plt.show()
 #%%
 duplicados = df[df.duplicated()]
 print(f' Cantidad de duplicados: {duplicados.shape[0]}')
-
-#%%
-# En el caso de que hubieran duplicados se eleminarían así: 
+# %% [markdown]
+# En el caso de que hubieran duplicados se eleminarían así:
+#%% 
 df = df.drop_duplicates()
 
 #%%
@@ -120,10 +119,10 @@ print(f'Lista de valores únicos en la columna "league": {ligas}')
 #%%
 resultados = list(df['home_result'].unique())
 print(f'Lista de valores únicos en la columna "home_result": {resultados}')
-
-#%%
+# %% [markdown]
 # Si existieran valores inconsistentes en texto se reemplazarían así:
-df = df['league'].replace({'LaLiga': 'La_Liga'})
+#%%
+df['league'] = df['league'].replace({'LaLiga': 'La_Liga'})
 
 # %% [markdown]
 # ## 5. Creación de variables  (Integrante A)
@@ -155,6 +154,38 @@ df["total_cards"] = (
 # Esta variable nos permite medir la intensidad de los partidos, nos puede servir para comparar si en los derbis hay más intesidad y faltas que en un partido normal.
 # %% [markdown]
 # ## 6. Filtrado y condiciones en pandas  (Integrante B)
+#%%
+print(df['home_result'].value_counts(normalize=True))
+# %% [markdown]
+# En el 46.9% del total de partidos gana el equipo local, en el 29,4% gana el visitante y en el 23,8% restante el resultado es un empate.
+#%%
+largos = df[df['travel_distance_km'] > 800]
+print(len(largos))
+print(largos['home_result'].value_counts(normalize=True))
+# %% [markdown]
+# En los 2885 partidos donde la distancia de viaje es de más de 800 km 60,7% del total de partidos gana el equipo local, en el 20,7% gana el visitante y en el 28,5% restante el resultado es un empate.
+
+#%%
+lleno = df[df['attendance_pct'] > 0.8]
+print(len(lleno))
+print(lleno['home_result'].value_counts(normalize=True))
+# %% [markdown]
+# En los 16919 partidos donde el porcentaje de asistencia es mayor al 80%, 48.51% del total de partidos gana el equipo local, en el 28.1% gana el visitante y en el 23.3% restante el resultado es un empate.
+
+#%%
+alta_asistencia = df[df['crowd_size'] > 50000]
+print(len(alta_asistencia))
+print(alta_asistencia['home_result'].value_counts(normalize=True))
+# %% [markdown]
+# De los 3122 partidos donde asisten más de 50000 personas el 49.0% gana el equipo local, el 28.3% gana el visitante y en el 22.6% restante el resultado es un empate.
+
+#%%
+goles_visitante = df[df['goals_away'] >= 1]
+print(len(goles_visitante))
+print(goles_visitante['home_result'].value_counts(normalize=True))
+# %% [markdown]
+# En los 33878 partidos donde el equipo visitante mete uno o más goles 43.3% los gana el equipo visitante, 31.3% son empates y en el 25.3% restante gana el local.
+
 
 # %% [markdown]
 # ## 7. Agrupación con groupby  (Integrante A)
