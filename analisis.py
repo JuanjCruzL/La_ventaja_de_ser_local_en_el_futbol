@@ -98,7 +98,7 @@ sns.boxplot(x="yellow_away", data=df, color="skyblue", width=0.5)
 plt.xlabel("Tarjetas amarillas del Equipo Visitante", fontsize=10)
 
 plt.show()
-# ## A diferencia del local, los visitantes suelen recibir bastantes más tarjetas, a pesar de que su mediana sea la misma, el q3 es bastante mas extenso cubriendo desde 3 a 6 tarjetas del equpio visitante, 
+# ## A diferencia del local, los visitantes suelen recibir bastantes más tarjetas, a pesar de que su mediana sea la misma, el q3 es bastante mas extenso cubriendo desde 3 a 6 tarjetas del equpio visitante. 
 # %% [markdown]
 # ## 4. Valores inconsistentes y duplicados  (Integrante B)
 # Usando .duplicated() verificamos que esta base de datos no tiene valores duplicados.
@@ -127,7 +127,32 @@ df = df['league'].replace({'LaLiga': 'La_Liga'})
 
 # %% [markdown]
 # ## 5. Creación de variables  (Integrante A)
+#%%
+mapa_paises = {
+    'Serie_A': 'Italy',
+    'Primeira': 'Portugal',
+    'Eredivisie': 'Netherlands',
+    'EPL': 'England',
+    'La_Liga': 'Spain',
+    'Championship': 'England',
+    'Ligue_1': 'France',
+    'Bundesliga': 'Germany'
+}
 
+df['country'] = df['league'].map(mapa_paises)
+df["country"].unique()
+# Creamos la variable pais, que despues la usaremos en un mapa de calor
+#%%
+df["fouls_diff"] = df["fouls_home"] - df["fouls_away"]
+
+# Esta variable nos permite evidenciar de manera directa la diferencia de faltas cobradas del local respecto al visitante.
+#%%
+df["total_cards"] = (
+    df["yellow_home"] + df["yellow_away"] +
+    df["red_home"] + df["red_away"]
+)
+
+# Esta variable nos permite medir la intensidad de los partidos, nos puede servir para comparar si en los derbis hay más intesidad y faltas que en un partido normal.
 # %% [markdown]
 # ## 6. Filtrado y condiciones en pandas  (Integrante B)
 
