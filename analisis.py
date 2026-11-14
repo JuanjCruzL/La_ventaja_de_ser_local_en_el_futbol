@@ -1,6 +1,6 @@
 # %% [markdown]
 # # La ventaja de ser local en el fútbol
-# Integrantes: Natalía Guzmán , Juan José Cruz
+# Integrantes: Natalia Guzmán , Juan José Cruz
 
 # %%
 import pandas as pd
@@ -15,7 +15,7 @@ df = pd.read_csv("datos/home_advantage_matches.csv")
 
 # %%
 print("Muestra de los registros:")
-display(df.head())
+print(df.head())
 
 # %% [markdown]
 # Tomamos los primeros 5 registros para dar un primer vistazo a la base de datos y sus variables.
@@ -36,11 +36,11 @@ df.info()
 
 # %%
 print("Estadísticas descriptivas:")
-display(df.describe().round(2))
+print(df.describe().round(2))
 
 # %% [markdown]
 # ## 2. Manejo de datos faltantes  (Integrante B)
-# Nuestra base de datos no tiene ningún dato faltante. En el caso de que existieran se imputarían usando la mediana 
+# Nuestra base de datos no tiene ningún dato faltante. En el caso de que existieran se imputarían usando la mediana, 
 # ya que además de que esta medida no se deja influenciar por outliers, columnas como "home_points", "goals_away" y 
 # "fouls_away" tienen variables discretas y por lo tanto la media no es adecuada para reemplazarlos.
 
@@ -132,9 +132,7 @@ plt.show()
 
 # %% [markdown]
 # ## 4. Valores inconsistentes y duplicados  (Integrante B)
-# Usando .duplicated() verificamos que esta base de datos no tiene valores duplicados.
-# Adicionalmente revisamos las variables categóricas con .unique() y comprobamos que no hay valores inconsistentes de texto.
-# Si existieran, los eliminaríamos o cambiaríamos usando .drop_duplicates(), .replace() o fillna() según el caso.
+# Usando ```.duplicated()``` verificamos que esta base de datos no tiene valores duplicados. Adicionalmente revisamos las variables categóricas con   ```.unique()``` y comprobamos que no hay valores inconsistentes de texto. Si existieran, los eliminaríamos o cambiaríamos usando ```.drop_duplicates()```, ```.replace()``` o ```fillna()``` según el caso.
 
 # %%
 duplicados = df[df.duplicated()]
@@ -158,7 +156,7 @@ print(f'Lista de valores únicos en la columna "home_result": {resultados}')
 # Si existieran valores inconsistentes en texto se reemplazarían así:
 
 # %%
-df = df['league'].replace({'LaLiga': 'La_Liga'})
+df['league'] = df['league'].replace({'LaLiga': 'La_Liga'})
 
 # %% [markdown]
 # ## 5. Creación de variables  (Integrante A)
@@ -174,7 +172,9 @@ mapa_paises = {
     'Ligue_1': 'France',
     'Bundesliga': 'Germany'
 }
-
+print(df.columns)
+print(df.head(10))
+print(df['league'].unique())
 df['country'] = df['league'].map(mapa_paises)
 df["country"].unique()
 
@@ -198,7 +198,8 @@ df["total_cards"] = (
 # %% [markdown]
 # ## 6. Filtrado y condiciones en pandas  (Integrante B)
 #%%
-print(df['home_result'].value_counts(normalize=True))
+filtro = df['home_result'].value_counts(normalize=True)
+filtro
 # %% [markdown]
 # En el 46.9% del total de partidos gana el equipo local, en el 29,4% gana el visitante y en el 23,8% restante el resultado es un empate.
 #%%
@@ -288,6 +289,125 @@ attendance_pct.round(2)
 # A mayor porcentaje de asistencia, efectivamente mejora el rendimiento del equipo local en goles, puntos y faltas a favor. En los 9,925 partidos con asistencia 0.0 (que corresponden en su mayoría a la pandemia), el juego fue mucho más parejo en goles (1.44 vs 1.20) y prácticamente neutral en las faltas (0.01). En contraste, cuando el estadio roza el 100% de ocupación (0.995 - 0.999), el local dispara su promedio hasta los 2.00 goles y más de 2.1 puntos por partido, mientras el desbalance en faltas supera las -5.00 a su favor.
 # %% [markdown]
 # ## 8. Visualizaciones  (Integrante B)
+
+# %% [markdown]
+# **1. Comparación porcentaje de victorias del equipo local entre países** 
+#%%
+import plotly.express as px
+
+df['local_gana'] = (df['home_result'] == 'home_win').astype(int)
+df_mapa = (df.groupby('country', as_index=False)['local_gana'].mean())
+df_mapa['local_gana'] = df_mapa['local_gana'] * 100
+df_mapa['country_plot'] = df_mapa['country'].replace({'England': 'United Kingdom'})
+
+fig = px.choropleth(
+    df_mapa,
+    locations='country_plot',
+    locationmode='country names',
+    color='local_gana',
+    hover_name='country',
+    scope='europe',
+    color_continuous_scale='plasma',  
+    template='plotly_dark',           
+    title='Porcentaje de victorias en casa por país',
+    labels={'puntos_casa': 'Promedio de puntos'}
+)
+fig.update_geos(
+    resolution=50,               
+    showcountries=True,
+    countrycolor="#8A8A8A",      
+    countrywidth=0.8,
+    showland=True,
+    landcolor="#E4E4E4D6",         
+    showocean=True,
+    oceancolor="#000000",        
+    bgcolor="#000000FF"            
+)
+
+
+fig.update_layout(
+    title={
+        'text': '<b>Porcentaje de victorias en casa por país</b>',
+        'x': 0.5,
+        'xanchor': 'center',
+        'font': {'size': 20, 'color': 'white'}
+    },
+    paper_bgcolor="#000000FF",    
+    margin={"r": 10, "t": 60, "l": 10, "b": 10}
+)
+
+fig.show()
+
+# %% [markdown]
+# A través del gráfico podemos observar que mientras Paises Bajos tiene el mayor porcentaje de victoria de los equipos locales (47.18%), España presenta el menor (46,04%). A pesar de esto la diferencia entre ligas es pequeña (1.14%), lo cual indica que no existe un cambio significativo de la ventaja de la localía entre ligas.
+# %% [markdown]
+# **2. Porcentaje de victorias en casa según la distacia de viaje**
+
+#%%
+df['tramo'] = pd.cut(df['travel_distance_km'], [0, 200, 500, 800, 1500, 10000])
+tabla = (df.groupby('tramo', observed=True)['home_result']
+           .value_counts(normalize=True).unstack() * 100)
+colores = plt.get_cmap('YlGnBu')(np.linspace(0.25, 0.95, tabla.shape[1]))
+tabla.plot(kind='bar', stacked=True, color=colores)
+plt.ylabel('% victorias locales')
+plt.xlabel('Distancia de viaje (km)')
+plt.show()
+# %% [markdown]
+# Se evidencia una disminución progresiva en el porcentaje de victorias de visitante a medida que aumenta la distancia, de ~33% en viajes de hasta 200 km a ~13 % en viajes de más de 1500 km. Así mismo, los empates disminuyen y aumentan las victorias, de ~40% a ~65%. Esto indica que la distancia es uno de los factores que puede aumentar la ventaja del local.
+# %% [markdown]
+# **3. Proporción de victorias del equipo local en los derbis**
+
+#%%
+sns.barplot(data=df, x='is_derby', y='local_gana', palette='Set2')
+plt.xticks([0, 1], ['No', 'Sí'])
+plt.xlabel('¿Es un derbi?')
+plt.ylabel('Proporción de victorias locales')
+plt.show()
+
+# %% [markdown]
+# En los derbis disminuye ~4% las victorias del local, indicando que en este tipo de partidos se reduce la ventaja de jugar en casa.
+
+# %% [markdown]
+# **4. Diferencia entre faltas y amarillas según la asistencia** 
+
+#%%
+df['dif_amarillas'] = df['yellow_home'] - df['yellow_away']
+df['tramo_crowd'] = pd.qcut(df.loc[df['crowd_size'] > 0, 'crowd_size'], q=5)
+
+df[df['crowd_size'] > 0].groupby('tramo_crowd', observed=True)[['fouls_diff', 'dif_amarillas']].mean().plot(marker='o', cmap = 'coolwarm')
+plt.legend(['Diferencia de faltas', 'Diferencia de amarillas'])
+plt.xlabel('Cantidad de público')
+plt.xticks(rotation=45, ha='right')
+plt.tight_layout()
+# %% [markdown]
+# A medida que aumenta la cantidad de público, el equipo local comete en promedio menos faltas que el visitante (de ~-3,2 a ~-4,0 faltas).En cambio, las diferencia de amarillas se mantiene constante. 
+# Adicionalmente, en promedio, el equipo visitante acumula más faltas y recibe más tarjetas amarillas que el local.
+# %% [markdown]
+# **5. Porcentaje de victorias del local según la ocupación del estadio**
+
+#%%
+df['tramo_ocup'] = pd.cut(df['attendance_pct'],
+                          bins=[0, 0.5, 0.7, 0.9, 1.01],
+                          labels=['0-50 %', '50-70 %', '70-90 %', '90-100 %'])
+(df.groupby('tramo_ocup', observed=True)['local_gana'].mean() * 100).plot(kind='bar', color = 'teal')
+plt.xticks(rotation=0, ha='center')
+plt.tight_layout()
+plt.xlabel('Porcentaje de ocupación')
+plt.ylabel('% de victorias locales')
+# %% [markdown]
+#Conforme crece el porcentaje de ocupación, las victorias del local tienden a aumentar, pasan de ~43% con un estadio entre el 0 y 50% a ~50% con una ocupación de 90%-100%. Esto sugiere una relación entre estadios más llenos y mayor ventaja local, aunque pueden influir otros factores como la fortaleza del rival.
+
+# %% [markdown]
+# **6. Proporción de victorias en casa a partir de la presencia de público**
+
+#%%
+sns.barplot(data=df, x='crowd_present', y='local_gana', palette= 'Set3')
+plt.xticks([0, 1], ['Sin público', 'Con público'])
+plt.xlabel('Presencia de público')
+plt.ylabel('Proporción de victorias locales')
+
+# %% [markdown]
+#En los partidos jugados sin público las victorias en casa disminuyeron aproximadamente un 5%. Esto confirma que el público es otro factor que puede aumentar la ventaja del local.
 
 # %% [markdown]
 # ## 9. Conclusiones finales  (Integrante A)
