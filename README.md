@@ -7,7 +7,8 @@
 ## Fuente de los datos
 [Enlace al dataset en kaggle](https://www.kaggle.com/datasets/sergionefedov/home-advantage-in-football-bias-or-real)
 
-Este dataset sintético Home Advantage in Football — Bias or Real? contiene 50000 partidos construidos con el objetivo de verificar si la ventaja de jugar de local en los partidos de fútbol es real. Separa sus posibles causas en variables distintas: el público (asistencia y ocupación del estadio, y si asistió público o no), la distancia de viaje del visitante, la familiaridad del local con la cancha y la fortaleza de los equipos medida con Elo. 
+Este dataset sintético Home Advantage in Football — Bias or Real? contiene 50000 partidos construidos con el objetivo de verificar si la ventaja de jugar de local en los partidos de fútbol es real. Separa sus posibles causas en variables distintas: el público (asistencia y ocupación del estadio, y si asistió público o no), la distancia de viaje del visitante, la familiaridad del local con la cancha y la fortaleza de los equipos medida con Elo.
+ 
 ## Estructura de los datos
 El conjunto contiene 50000 registros y 25 variables. Cada fila representa un partido de fútbol, con sus características previas (liga, Elo, distancia de viaje, asistencia) y sus resultados (goles, faltas, tarjetas, resultado y puntos).
 
@@ -15,6 +16,7 @@ El conjunto contiene 50000 registros y 25 variables. Cada fila representa un par
 |---|---|---|
 | **Categóricas** | 5 | `match_id`, `league`, `home_result`, `crowd_present`, `is_derby` |
 | **Numéricas continuas** | 7 | `elo_home`, `elo_away`, `elo_diff`, `attendance_pct`, `travel_distance_km`, `venue_familiarity`, `referee_bias_susceptibility` |
+| **Numéricas discretas** | 13 | `stadium_capacity`, `crowd_size`, `timezones_crossed`, `fouls_home`, `fouls_away`, `yellow_home`, `yellow_away`, `red_home`, `red_away`, `goals_home`, `goals_away`, `home_goal_diff`, `home_points` |
 
 ## Diccionario de datos
 | Variable | Tipo | Descripción | Valores / unidades |
