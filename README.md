@@ -71,3 +71,15 @@ El factor ambiental lo cambia todo. En los 9,925 partidos jugados sin público (
 
 7. **Los derbis rompen la regla:** 
 #Curiosamente, en los partidos de máxima rivalidad (derbis) la ventaja del local se reduce en 4.1 puntos porcentuales (bajando del 47.11% al 43.00% de victorias locales). Más allá de la tensión emocional propia de un clásico, los datos muestran que en estos encuentros desaparece el desgaste por desplazamiento (distancia promedio de 10.9 km frente a 359.6 km en partidos normales), neutralizando uno de los principales castigos que sufre el equipo visitante.
+
+35299    245
+48553    118
+8719    -237
+44063    -64
+21557     52
+42308    -16
+14482   -125
+16398    285
+48094   -233
+43306     87
+Name: elo_diff, dtype: int64
